@@ -56,6 +56,5 @@ RSpec.describe "Merchants API" do
       expect(item[:attributes]).to include(:name, :description, :unit_price, :merchant_id)
       expect(item[:attributes][:merchant_id]).to eq(merchant.id)
     end
-
   end
 end
