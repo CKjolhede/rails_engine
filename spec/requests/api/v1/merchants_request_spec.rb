@@ -16,12 +16,12 @@ RSpec.describe "Merchants API" do
    
   end
   
-  xit 'can get one merchant' do
+  it 'can get one merchant' do
     create_list(:merchant, 50)
     get "/api/v1/merchants/42"
 
-    expect(response).to have_https_status(200)
-   response_body = JSON.parse(response.body, symbolize_names: true)
+    expect(response.status).to eq(200)
+    response_body = JSON.parse(response.body, symbolize_names: true)
     merchant = response_body[:data]
     expect(merchant[:attributes]).to include(:name)
   end
