@@ -33,4 +33,18 @@ RSpec.describe "Merchants API" do
   #   get "/api/v1/merchants/30"
   #   expect(response.status).to eq(404)
   # end
+
+  it 'can get all of a merchants items' do
+    merchant = create(:merchant)
+    item1 = create(:item, merchant_id: merchant.id)
+    item2 = create(:item, merchant_id: merchant.id)
+    item3 = create(:item, merchant_id: merchant.id)
+    item4 = create(:item, merchant_id: merchant.id)
+
+    get "/api/v1/merchants/#{merchant.id}/items"
+    expect(response.status).to eq(200)
+
+    response_body = JSON.parse(response.body, symbolize_names: true)
+
+  end
 end
