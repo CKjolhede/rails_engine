@@ -45,6 +45,17 @@ RSpec.describe "Merchants API" do
     expect(response.status).to eq(200)
 
     response_body = JSON.parse(response.body, symbolize_names: true)
+    items = response_body[:data]
+
+    expect(items).to be_an Array
+
+    items.each do |item|
+      expect(item).to have_key(:id)
+      expect(item).to have_key(:type)
+      expect(item).to have_key(:attributes)
+      expect(item[:attributes]).to include(:name, :description, :unit_price, :merchant_id)
+      expect(item[:attributes][:merchant_id]).to eq(merchant.id)
+    end
 
   end
 end
