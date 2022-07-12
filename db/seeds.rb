@@ -18,3 +18,7 @@ cmd = "pg_restore --verbose --clean --no-acl --no-owner -h localhost -U $(whoami
 puts "Loading PostgreSQL Data dump into local database with command:"
 puts cmd
 system(cmd)
+# cmd = "pg_restore --verbose --clean --no-acl --no-owner -h localhost -U $(whoami) -d rails-engine_test db/data/rails-engine-test.pgdump"
+# puts "Loading PostgreSQL Data dump into local database with command:"
+# puts cmd
+# system(cmd)
