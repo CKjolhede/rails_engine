@@ -6,6 +6,6 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def show
-     render json: MerchantSerializer.new(Merchant.find(params[:id])), status: :ok
+    render json: MerchantSerializer.new(Merchant.find(params[:id])), status: :ok
   end
 end
