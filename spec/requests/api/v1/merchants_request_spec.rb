@@ -33,7 +33,7 @@ RSpec.describe "Merchants API" do
   
   it 'can get one merchant; happy path' do
     create_list(:merchant, 20)
-    # binding.pry
+
     get "/api/v1/merchants/12"
 
     expect(response.status).to eq(200)
@@ -68,7 +68,7 @@ RSpec.describe "Merchants API" do
     items.each do |item|
       expect(item).to have_key(:id)
       expect(item).to have_key(:type)
-      expect(item).to have_key(:attributes)
+      # expect(item).to have_key(:attributes)  DRY?
       expect(item[:attributes]).to include(:name, :description, :unit_price, :merchant_id)
       expect(item[:attributes][:merchant_id]).to eq(merchant.id)
     end
