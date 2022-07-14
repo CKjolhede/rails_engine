@@ -57,7 +57,7 @@ RSpec.describe Item, type: :request do
   end
 
   describe "Post" do
-    it 'creates a new item' do
+    it 'creates a new item, happy path' do
       merchant = create(:merchant)
       item_params = ({
                       name: 'Car Tweet',
@@ -83,7 +83,52 @@ RSpec.describe Item, type: :request do
       expect(response).to be_successful
       expect(Item.count).to eq(0)
       expect{Item.find(created_item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+    end
 
+    it 'will return merchant info from item ' do
+      merchant = create(:merchant)
+      item = create(:item, merchant_id: merchant.id)
+
+      get "/api/v1/items/#{item.id}/merchants/#{merchant.id}"
+
+      expect(response.status).to eq(200)
+
+      response_body = JSON.parse(response.body, symbolize_names: true)
+      merchant_hash = response_body[:data]
+binding.pry
+
+
+
+
+    end
+  end
+
+  describe "Patch" do
+    it 'will update item attributes' do
+      merchant = create(:merchant)
+      merchant2 = create(:merchant)
+      item = create(:item, merchant_id: merchant.id)
+      original_name = item.name
+      original_description = item.description
+      original_unit_price = item.unit_price
+      original_merchant_id = item.merchant_id
+
+      item_params = { name: "Yamakabaya", description: "The perfect fusion of headwear providing extreme versatility as it builds bridges", unit_price: 42.97, merchant_id: merchant2.id }
+      headers = {"CONTENT_TYPE" => "application/json"}
+      # binding.pry
+
+      patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
+      item = Item.find_by(id: item.id)
+      
+      expect(response.status).to eq(200 || 201 || 202)
+      expect(item.name).to_not eq(original_name)
+      expect(item.name).to eq("Yamakabaya")
+      expect(item.description).to_not eq(original_description)
+      expect(item.description).to eq("The perfect fusion of headwear providing extreme versatility as it builds bridges")
+      expect(item.unit_price).to_not eq(original_unit_price)
+      expect(item.unit_price).to eq(42.97)
+      expect(item.merchant_id).to_not eq(original_merchant_id)
+      expect(item.merchant_id).to eq(merchant2.id)
     end
   end
 end
