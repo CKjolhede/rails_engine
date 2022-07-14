@@ -96,11 +96,6 @@ RSpec.describe Item, type: :request do
 
       response_body = JSON.parse(response.body, symbolize_names: true)
       merchant_hash = response_body[:data]
-
-
-
-
-
     end
   end
 
@@ -130,6 +125,41 @@ RSpec.describe Item, type: :request do
       expect(item.unit_price).to eq(42.97)
       expect(item.merchant_id).to_not eq(original_merchant_id)
       expect(item.merchant_id).to eq(merchant2.id)
+    end
+  end
+
+  describe "search for items by keyword" do
+    it 'returns all items containing keyword' do
+      merchant = Merchant.create!(name: "Lost Treasures")
+      item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
+      item2 = Item.create!(name: "Litte Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
+      item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
+      name = "Reasure"
+      
+      get "/api/v1/items/find_all?name=#{name}"
+      expect(response).to be_successful
+      response_body = JSON.parse(response.body, symbolize_names: true)
+      items = response_body[:data]
+
+      expect(items).to be_an Array
+      expect(items.count).to eq(2)
+    end
+  end
+
+  desribe 'searching for items with min price' do
+    it 'will return all items with price >= keyvalue' do
+      item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
+      item2 = Item.create!(name: "Litte Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
+      item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
+      min_price = 15
+      
+      get "/api/v1/items/find_all?min_price=#{min_price}"
+      expect(response).to be_successful
+      response_body = JSON.parse(response.body, symbolize_names: true)
+      items = response_body[:data]
+
+      expect(items).to be_an Array
+      expect(items.count).to eq(2)
     end
   end
 end
