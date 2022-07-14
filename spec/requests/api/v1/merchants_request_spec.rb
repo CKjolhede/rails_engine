@@ -52,6 +52,7 @@ RSpec.describe "Merchants API" do
 
   it 'can get all of a merchants items' do
     merchant = create(:merchant)
+
     item1 = create(:item, merchant_id: merchant.id)
     item2 = create(:item, merchant_id: merchant.id)
     item3 = create(:item, merchant_id: merchant.id)
@@ -64,6 +65,7 @@ RSpec.describe "Merchants API" do
     items = response_body[:data]
 
     expect(items).to be_an Array
+    expect(merchant.items.count).to eq(4)
 
     items.each do |item|
       expect(item).to have_key(:id)
