@@ -25,6 +25,17 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def find_all
+     items = Item.where("name ILIKE ? ", "%#{params[:name]}%")
+  
+    if items.nil?
+      render json: {data: {error: "No items found with search term: #{params[:name]}"}}, status: 200
+    else
+      render json: ItemSerializer.new(items), status: 200
+
+    end
+  end
+
   private
 
   def item_params
