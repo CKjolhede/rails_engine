@@ -17,7 +17,15 @@ class Api::V1::ItemsController < ApplicationController
     render json: Item.destroy(params[:id]), status: :no_content
   end
 
-private
+  def update
+    if Merchant.exists?(params[:item][:merchant_id])
+      render json: ItemSerializer.new(Item.update(params[:id], item_params)), status: :ok
+    else 
+      render json: {error: {message: "The merchant id number you have submitted. #{:merchant_id}, does not exist"}}, status: "Not Found", code: 404
+    end
+  end
+
+  private
 
   def item_params
     params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
