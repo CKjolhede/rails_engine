@@ -7,7 +7,8 @@ class Api::V1::MerchantItemsController < ApplicationController
   end
 
   def show
-    merchant = Merchant.find(params[:id])
+    item = Item.find(params[:id])
+    merchant = Merchant.find(item.merchant_id)
     render json: MerchantSerializer.new(merchant), status: :ok
   end
 end
