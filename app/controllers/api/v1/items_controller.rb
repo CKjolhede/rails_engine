@@ -26,12 +26,13 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def find_all
-     items = Item.search(params[:name])
+    items = Item.search(params[:name])
   
     if items.nil?
       render json: {data: {error: "No items found with search term: #{params[:name]}"}}, status: 200
     else
       render json: ItemSerializer.new(items), status: 200
+
     end
   end
   
@@ -53,30 +54,8 @@ class Api::V1::ItemsController < ApplicationController
   end
   
   private
-  
+
   def item_params
-    params.require(:item).permit(:name, :description, :unit_price, :merchant_id, :min_price, :max_price)
+    params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
   end
 end
-# if params[:name].present?
-# elsif params[:min_price].to_i < 0 
-#   render json: {data: {error: "min price price must be greater than zero"}}, status: 400
-# elsif items = Item.min_price_search(params[:min_price]).nil?
-#   render json: {data: :undefined}, status: "null", code: 200
-# else 
-# end  
-# elsif params[:max_price].present?
-#   # binding.pry
-#   # if params[:name].present?
-#   #   render json: {data: {error: "cannot send name and max_price"}}, status: "null", code: 400
-#   # elsif params[:max_price].to_i < 0 
-#   #   render json: {data: {error: "max price price must be greater than zero"}}, status: "null", code: 400
-#   # elsif items = Item.max_price_search(params[:max_price]).nil?
-#   #   render json: ItemSerializer.new(items), status: 200
-#   # else 
-#     items = Item.max_price_search(params[:max_price])
-#     render json: ItemSerializer.new(items), status: 200 
-# #   end
-# else
-#   render json: {data: {error: "Cannot leave search field blank"}}, status: 400
-# end

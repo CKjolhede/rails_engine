@@ -18,6 +18,7 @@ RSpec.describe Item, type: :model do
       item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
   
       expect(Item.search("Reasure")).to match_array([item1, item2])
+
     end 
   
     xit '#search returns all items with unit price >= min_price input' do

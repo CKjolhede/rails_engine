@@ -1,6 +1,4 @@
 class Api::V1::MerchantsController < ApplicationController
-    # include MethodsHelper 
-    # include ExclusionHandler
 
   def index
     render json: MerchantSerializer.new(Merchant.all), status: :ok
@@ -17,6 +15,7 @@ class Api::V1::MerchantsController < ApplicationController
       render json: {data: {error: "No merchant found with #{params[:name]} in the name"}}, status: 200
     else
       render json: MerchantSerializer.new(search_word), status: 200
+      # binding.pry
     end
   end
 end
