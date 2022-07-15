@@ -42,7 +42,7 @@ class Api::V1::ItemsController < ApplicationController
         items = Item.minmax_price_search(params[:min_price], params[:max_price])
         item = items.first
     elsif params[:min_price].present?
-        item = Item.search_min_price(params[:min_price])
+        items = Item.search_min_price(params[:min_price])
         item = items.first
         binding.pry
     else params[:max_price].present?

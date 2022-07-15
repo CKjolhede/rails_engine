@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
-  # include ExceptionHandler
-  # include Response
+  require Api::V1::ExceptionHandler
+  require Api::V1::ParamsHandler
+
+  
 end

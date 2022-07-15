@@ -1,12 +1,14 @@
 class Api::V1::MerchantsController < ApplicationController
+    # include MethodsHelper 
+    # include ExclusionHandler
 
   def index
-    # render json: Merchant.all
     render json: MerchantSerializer.new(Merchant.all), status: :ok
   end
 
   def show
-    render json: MerchantSerializer.new(Merchant.find(params[:id])), status: :ok
+    error_response if invalid_id
+    render json: MerchantSerializer.new(Merchant.find(params[:id])), status: :ok if !invalid_id?
   end
 
   def find

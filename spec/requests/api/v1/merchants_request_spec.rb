@@ -22,26 +22,50 @@ RSpec.describe "Merchants API" do
       create_list(:merchant, 5)
       
       get "/api/v1/merchants"
-      
+
       response_body = JSON.parse(response.body, symbolize_names: true)  
-      expect(response_body).to include(:data) #sad path because without serializer :data absent
       merchants = response_body[:data]
+      
+      expect(response_body).to include(:data) 
       expect(merchants).to_not include(:created_at)
       expect(merchants).to_not include(:updated_at)
     end
     
-    it 'can get one merchant; happy path' do
+  end 
+
+  context 'it returns one merchant' do 
+    it 'happy path' do
       create_list(:merchant, 30)
       
       get "/api/v1/merchants/32"
       
       expect(response.status).to eq(200)
+
       response_body = JSON.parse(response.body, symbolize_names: true)
       merchant = response_body[:data]
+
       expect(merchant.count).to eq(3)
-      expect(merchant[:attributes]).to include(:name)
+      expect(merchant).to include(:type, :id, :attributes)
       expect(merchant[:attributes].count).to eq(1)
+      expect(merchant[:attributes]).to include(:name)
     end
+
+    it 'sad path' do
+      create_list(:merchant, 30)
+      
+      get "/api/v1/merchants/50000"
+      binding.pry
+      expect(response.status).to eq(404)
+
+      response_body = JSON.parse(response.body, symbolize_names: true)
+      merchant = response_body[:data]
+
+      expect(merchant.count).to eq(3)
+      expect(merchant).to include(:type, :id, :attributes)
+      expect(merchant[:attributes].count).to eq(1)
+      expect(merchant[:attributes]).to include(:name)
+    end
+  
     # THIS sadpath won't work due to inability of rspec to call w/o merch.id
     # it 'will return status code 404 if merchant.id does not exist' do
     #   create_list(:merchant, 2)

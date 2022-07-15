@@ -112,7 +112,6 @@ RSpec.describe Item, type: :request do
 
       item_params = { name: "Yamakabaya", description: "The perfect fusion of headwear providing extreme versatility as it builds bridges", unit_price: 42.97, merchant_id: merchant2.id }
       headers = {"CONTENT_TYPE" => "application/json"}
-      # binding.pry
 
       patch "/api/v1/items/#{item.id}", headers: headers, params: JSON.generate({item: item_params})
       item = Item.find_by(id: item.id)
@@ -150,21 +149,21 @@ RSpec.describe Item, type: :request do
   end
 
   describe 'searching for items with min price' do
-    it 'will return all items with price >= keyvalue' do
+    it 'will return one item with price >= keyvalue' do
       merchant = Merchant.create!(name: "Lost Treasures")
       item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
       item2 = Item.create!(name: "Little Treasures", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
       item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
       min_price = 15
-      max_price = 100
+      max_price = 2000
       
       get "/api/v1/items/find?min_price=#{min_price}?max+price=#{max_price}"
       expect(response).to be_successful
       response_body = JSON.parse(response.body, symbolize_names: true)
       items = response_body[:data]
 
-      expect(items).to be_an Array
-      expect(items.count).to eq(2)
+      expect(items).to be_an Hash
+      expect(items[:attributes].count).to eq(4)
       expect(items[0][:attributes][:name]).to eq("Lost treasure")
       expect(items[1][:attributes][:name]).to eq("Little Treasures")
     end
@@ -174,7 +173,7 @@ RSpec.describe Item, type: :request do
       item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
       item2 = Item.create!(name: "Litte Treasures", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
       item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
-      max_price = 15
+      max_price = 150
       
       get "/api/v1/items/find?max_price=#{max_price}"
       expect(response).to be_successful
