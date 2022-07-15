@@ -1,5 +1,7 @@
 class Item < ApplicationRecord
   belongs_to :merchant
+  has_many :invoice_items, dependent: :destroy
+  has_many :invoices, through: :invoice_items
   validates_presence_of :name, :description, :unit_price, :merchant_id
 
   def self.search(name)
@@ -36,7 +38,6 @@ class Item < ApplicationRecord
   end
 
   def self.search_price(params)
-   
     if params[:name]
       ErrorSerializer.with_name(400) 
     elsif params[:min_price] && !params[:max_price]
@@ -48,5 +49,10 @@ class Item < ApplicationRecord
     else
       ErrorSerializer.invalid(status: 400)
     end
+  end
+
+  def destroy_one_item_invoices
+      the_invoices = Invoice.joins(:items).group(:id).having("count(item_id) = 1")
+      Invoice.where(id: the_invoices.pluck(:id)).destroy_all
   end
 end
