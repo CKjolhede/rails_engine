@@ -30,12 +30,12 @@ RSpec.describe Item, type: :request do
     it 'one item by item id' do
       merchant = create(:merchant)
       create_list(:item, 10, merchant_id: merchant.id)
-      item = Item.find(7)
-      
+      id = merchant.items[4].id
+      item = Item.find(id)
       expect(item.created_at.present?).to eq(true)
       expect(item.updated_at.present?).to eq(true)
       
-      get "/api/v1/items/7"
+      get "/api/v1/items/#{id}"
 
       expect(response.status).to eq(200)
       
