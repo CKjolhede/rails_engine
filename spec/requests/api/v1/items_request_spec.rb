@@ -149,22 +149,30 @@ RSpec.describe Item, type: :request do
   describe 'searching for items with min price' do
     before(:each) do
       @merchant = Merchant.create!(name: "Lost Treasures")
-      @item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
-      @item2 = Item.create!(name: "Little Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
-      @item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
+      @item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: @merchant.id)
+      @item2 = Item.create!(name: "Little Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: @merchant.id)
+      @item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: @merchant.id)
     end
 
-    it 'will return one item with price >= keyvalue' do
+    xit 'will return one item with price >= keyvalue' do
 
       get "/api/v1/items/find?min_price=15"
 
       expect(response.status).to eq(200)
       response_body = JSON.parse(response.body, symbolize_names: true)
-      item = response_body[:data].first
+      item = response_body[:data]
 
-      expect(item[:attributes][:unit_price]).to be_greater_than(15)
+      expect(item[:attributes][:unit_price].to_i).to be > (15)
       expect(item[:attributes][:name]).to eq("Lost treasure")
-      expect(item.count).to eq(4)
+      expect(item.count).to eq(3)
+      expect(item[:attributes].count).to eq(4)
+    end
+
+    xit 'will return an error when name and price are passed' do
+
+      get "/api/v1/items/find?min_price=15&name=someone"
+
+      expect(response.status).to eq(400)
     end
   end
 
