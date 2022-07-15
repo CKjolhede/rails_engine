@@ -10,7 +10,7 @@ class Item < ApplicationRecord
     if min_price.to_i < 0
         ErrorSerializer.neg_min(400)
     else
-      where(unit_price > min_price.to_i).first
+      where("unit_price > #{min_price.to_i}").first
     end
   end
 
@@ -18,11 +18,12 @@ class Item < ApplicationRecord
     if max_price.to_i < 0
       ErrorSerializer.neg_min(400)
     else
-      where(unit_price > max_price.to_i).first
+      where("unit_price > #{max_price.to_i}").first
     end
   end
 
   def self.search_minmax_price(min_price, max_price)
+    binding.pry
     if min_price.to_i < 0
       ErrorSerializer.neg_min(400)
     elsif max_price.to_i < 0
@@ -30,13 +31,14 @@ class Item < ApplicationRecord
     elsif min_price.to_i > max_price.to_i
       ErrorSerializer.min_over_max(400)
     else 
-      where(unit_price: min_price.to_i .. max_price.to_i).first
+      where("#{min_price.to_i} < unit_price <  #{max_price.to_i}").first
     end
   end
 
   def self.search_price(params)
+   
     if params[:name]
-      ErrorSerializer.with_name(404) 
+      ErrorSerializer.with_name(400) 
     elsif params[:min_price] && !params[:max_price]
       self.search_min_price(params[:min_price]) 
     elsif !params[:min_price] && params[:max_price]
