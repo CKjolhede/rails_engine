@@ -147,12 +147,29 @@ RSpec.describe Item, type: :request do
 
 
   describe 'searching for items with min price' do
+    before(:each) do
+      @merchant = Merchant.create!(name: "Lost Treasures")
+      @item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
+      @item2 = Item.create!(name: "Little Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
+      @item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
+    end
+
     it 'will return one item with price >= keyvalue' do
-      merchant = Merchant.create!(name: "Lost Treasures")
+
+      get "/api/v1/items/find?min_price=15"
+
+      expect(response.status).to eq(200)
+      response_body = JSON.parse(response.body, symbolize_names: true)
+      item = response_body[:data].first
+
+      expect(item[:attributes][:unit_price]).to be_greater_than(15)
+      expect(item[:attributes][:name]).to eq("Lost treasure")
+      expect(item.count).to eq(4)
     end
   end
+
   describe 'searching for items with min price' do
-    it 'will return all items with price >= keyvalue' do
+    xit 'will return one item with price <= keyvalue' do
       merchant = Merchant.create!(name: "Lost Treasures")
 
       item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
@@ -174,7 +191,7 @@ RSpec.describe Item, type: :request do
       expect(items[1][:attributes][:name]).to eq("Little Treasure")
     end
 
-    xit 'will return all items with price <= keyvalue' do
+    xit 'will return one item with price between min and max price' do
       merchant = Merchant.create!(name: "Lost Treasures")
       item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
       item2 = Item.create!(name: "Litte Treasures", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
