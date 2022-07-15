@@ -30,12 +30,13 @@ RSpec.describe Item, type: :request do
     it 'one item by item id' do
       merchant = create(:merchant)
       create_list(:item, 10, merchant_id: merchant.id)
-      item = Item.find(7)
+      id = Item.all[4].id
+      item = Item.find(id)
       
       expect(item.created_at.present?).to eq(true)
       expect(item.updated_at.present?).to eq(true)
       
-      get "/api/v1/items/7"
+      get "/api/v1/items/#{id}"
 
       expect(response.status).to eq(200)
       
@@ -132,7 +133,7 @@ RSpec.describe Item, type: :request do
     it 'returns all items containing keyword' do
       merchant = Merchant.create!(name: "Lost Treasures")
       item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
-      item2 = Item.create!(name: "Litte Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
+      item2 = Item.create!(name: "Little Treasures", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
       item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
       name = "Reasure"
       
@@ -143,23 +144,46 @@ RSpec.describe Item, type: :request do
 
       expect(items).to be_an Array
       expect(items.count).to eq(2)
+      expect(items[0][:attributes][:name]).to eq("Lost treasure")
+      expect(items[1][:attributes][:name]).to eq("Little Treasures")
     end
   end
 
-  desribe 'searching for items with min price' do
+  describe 'searching for items with min price' do
     it 'will return all items with price >= keyvalue' do
+      merchant = Merchant.create!(name: "Lost Treasures")
       item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
-      item2 = Item.create!(name: "Litte Treasure", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
+      item2 = Item.create!(name: "Little Treasures", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
       item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
       min_price = 15
+      max_price = 100
       
-      get "/api/v1/items/find_all?min_price=#{min_price}"
+      get "/api/v1/items/find?min_price=#{min_price}?max+price=#{max_price}"
       expect(response).to be_successful
       response_body = JSON.parse(response.body, symbolize_names: true)
       items = response_body[:data]
 
       expect(items).to be_an Array
       expect(items.count).to eq(2)
+      expect(items[0][:attributes][:name]).to eq("Lost treasure")
+      expect(items[1][:attributes][:name]).to eq("Little Treasures")
+    end
+
+    it 'will return all items with price <= keyvalue' do
+      merchant = Merchant.create!(name: "Lost Treasures")
+      item1 = Item.create!(name: "Lost treasure", description: "A real treasure", unit_price: 1114.01, merchant_id: merchant.id)
+      item2 = Item.create!(name: "Litte Treasures", description: "A really tiny thing", unit_price: 114.01, merchant_id: merchant.id)
+      item3 = Item.create!(name: "Knockoff for Sure", description: "not treasure for sure real", unit_price: 14.01, merchant_id: merchant.id)
+      max_price = 15
+      
+      get "/api/v1/items/find?max_price=#{max_price}"
+      expect(response).to be_successful
+      response_body = JSON.parse(response.body, symbolize_names: true)
+      items = response_body[:data]
+
+      expect(items).to be_an Array
+      expect(items.count).to eq(1)
+      expect(items[0][:attributes][:name]).to eq("Knockoff for Sure")
     end
   end
 end
