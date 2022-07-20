@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Item, type: :model do
   describe "relationships and validations" do
     it { should belong_to :merchant}
+    it { should have_many :invoice_items}
+    it { should have_many (:invoices).through(:invoice_items)}
 
     it {should validate_presence_of :name}
     it {should validate_presence_of :description}
@@ -25,10 +27,10 @@ RSpec.describe Item, type: :model do
       item1 = create(:item, merchant_id: merchant.id)
       item2 = create(:item, merchant_id: merchant.id)
       invoice1 = create(:invoice)
-      InvoiceItem.create(invoice:invoice1, item:item1)
+      InvoiceItem.create(invoice: invoice1, item: item1)
       invoice2 = create(:invoice)
-      InvoiceItem.create(invoice:invoice2, item:item1)
-      InvoiceItem.create(invoice:invoice2, item:item2)
+      InvoiceItem.create(invoice: invoice2, item: item1)
+      InvoiceItem.create(invoice: invoice2, item: item2)
 
       item1.destroy_one_item_invoices
       invoices=Invoice.all 	

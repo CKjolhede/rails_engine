@@ -1,7 +1,6 @@
 class MerchantSerializer
   include JSONAPI::Serializer
   attributes :name
- 
 
   # def self.format_merchants(merchants)
   #   data: books.map do |merchant|

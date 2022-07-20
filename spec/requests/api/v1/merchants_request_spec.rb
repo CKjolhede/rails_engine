@@ -10,7 +10,6 @@ RSpec.describe "Merchants API" do
       expect(response).to be_successful
       
       response_body = JSON.parse(response.body, symbolize_names: true)  
-      # expect(response_body).to be_a Hash
       merchants = response_body[:data]
       expect(merchants).to be_a Array
       expect(merchants.count).to eq(5)
@@ -92,7 +91,7 @@ RSpec.describe "Merchants API" do
       items.each do |item|
         expect(item).to have_key(:id)
         expect(item).to have_key(:type)
-        # expect(item).to have_key(:attributes)  DRY?
+        # expect(item).to have_key(:attributes)  DRY? because of next line
         expect(item[:attributes]).to include(:name, :description, :unit_price, :merchant_id)
         expect(item[:attributes][:merchant_id]).to eq(merchant.id)
       end
@@ -112,7 +111,7 @@ RSpec.describe "Merchants API" do
 
       expect(merchant).to be_a Hash
       expect(merchant[:attributes][:name]).to eq("Lost Treasures")
-      expect(merchant).to_not include(merchant_other)
+      expect(merchant).to_not include(merchant_other)  #sad
 
     end
   end

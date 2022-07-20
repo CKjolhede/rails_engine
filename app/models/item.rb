@@ -25,7 +25,7 @@ class Item < ApplicationRecord
   end
 
   def self.search_minmax_price(min_price, max_price)
-    binding.pry
+
     if min_price.to_i < 0
       ErrorSerializer.neg_min(400)
     elsif max_price.to_i < 0
