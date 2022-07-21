@@ -35,8 +35,9 @@ RSpec.describe "Merchants API" do
   context 'it returns one merchant' do 
     it 'happy path' do
       create_list(:merchant, 30)
-      
-      get "/api/v1/merchants/32"
+      merchant = Merchant.all.first
+
+      get "/api/v1/merchants/#{merchant.id}"
       
       expect(response.status).to eq(200)
 

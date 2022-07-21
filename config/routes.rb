@@ -14,6 +14,9 @@ Rails.application.routes.draw do
       resources :items do
         resources :merchants, only: [:show], controller: "merchant_items", action: :show
       end
+      namespace :revenue do
+        resources :merchants, only: [:index]
+      end
     end
   end
 end
