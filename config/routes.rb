@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+      get '/merchants/most_items', to: 'merchants#most_items'
       get '/merchants/find', to: 'merchants#find'
       get 'items/find', to: 'items#find'
       get '/items/find_all', to: 'items#find_all'
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
       namespace :revenue do
         resources :merchants, only: [:index]
       end
+
     end
   end
 end

@@ -16,4 +16,9 @@ class Api::V1::MerchantsController < ApplicationController
       render json: MerchantSerializer.new(search_word), status: 200
     end
   end
+
+  def most_items
+    merchants = Merchant.most_items(params[:quantity])
+    render json: ItemsSoldSerializer.new(merchants)
+  end
 end
